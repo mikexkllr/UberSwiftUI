@@ -8,16 +8,19 @@
 import SwiftUI
 
 struct MapViewActionButton: View {
+    @Binding var clicked: Bool
     var body: some View {
         Button {
-            
+            withAnimation(.spring()) {
+                clicked.toggle()
+            }
         } label: {
             ZStack {
                 Circle()
                     .foregroundColor(Color.systemBackground)
                     .shadow(color: .black, radius: 3)
                 
-                Image(systemName: "line.3.horizontal")
+                Image(systemName: clicked ? "arrow.left" : "line.3.horizontal")
                     .font(.title2)
                     .foregroundColor(.black)
             }
@@ -28,6 +31,6 @@ struct MapViewActionButton: View {
 
 struct MapViewActionButton_Previews: PreviewProvider {
     static var previews: some View {
-        MapViewActionButton()
+        MapViewActionButton(clicked: .constant(true))
     }
 }
