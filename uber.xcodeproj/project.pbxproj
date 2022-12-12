@@ -95,6 +95,7 @@
 		33EF8E0E293B9532001AF5C8 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				33F17F00293B92D3001F94F6 /* UberApp.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -164,7 +165,6 @@
 				33EF8E10293B9545001AF5C8 /* Extensions */,
 				33EF8E0F293B953C001AF5C8 /* Core */,
 				33EF8E0E293B9532001AF5C8 /* App */,
-				33F17F00293B92D3001F94F6 /* UberApp.swift */,
 				33F17F04293B92D4001F94F6 /* Assets.xcassets */,
 				33F17F06293B92D4001F94F6 /* Preview Content */,
 			);
