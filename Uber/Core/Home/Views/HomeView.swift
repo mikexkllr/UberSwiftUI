@@ -11,26 +11,33 @@ struct HomeView: View {
     @EnvironmentObject var mapViewModel: MapViewModel
 
     var body: some View {
-        ZStack (alignment: .top) {
-            UberMapViewRepresentable()
-                .ignoresSafeArea()
-            
-            if mapViewModel.mapState == .searchingForLocation {
-                LocationSearchView()
-            } else if mapViewModel.mapState == .noInput {
-                    // button on left corner (leading top)
-                    LocationSearchActivateView()
-                        .padding(.top, 60)
-                        .onTapGesture {
-                            withAnimation(.spring()) {
-                                self.mapViewModel.mapState = .searchingForLocation
+        ZStack (alignment: .bottom) {
+            ZStack(alignment: .top) {
+                UberMapViewRepresentable()
+                    .ignoresSafeArea()
+                
+                if mapViewModel.mapState == .searchingForLocation {
+                    LocationSearchView()
+                } else if mapViewModel.mapState == .noInput {
+                        // button on left corner (leading top)
+                        LocationSearchActivateView()
+                            .padding(.top, 60)
+                            .onTapGesture {
+                                withAnimation(.spring()) {
+                                    self.mapViewModel.mapState = .searchingForLocation
+                                }
                             }
-                        }
-                }
+                    }
+                
+                MapViewActionButton()
+            }
             
-            MapViewActionButton()
+            if mapViewModel.mapState == .locationSelected {
+                RideRequestView()
+                    .transition(.move(edge: .bottom))
+            }
         }
-        
+        .edgesIgnoringSafeArea(.bottom)
     }
 }
 
