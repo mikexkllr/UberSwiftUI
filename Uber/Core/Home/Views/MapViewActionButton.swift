@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MapViewActionButton: View {
     @EnvironmentObject var mapViewModel: MapViewModel
+    @EnvironmentObject var locationViewModel: LocationSearchViewModel
     
     var body: some View {
         Button {
@@ -38,6 +39,7 @@ struct MapViewActionButton: View {
         case .locationSelected:
             print("DEBUG: Clear the map view")
             mapViewModel.mapState = .noInput
+            locationViewModel.selectedLocation = nil
         }
     }
     
