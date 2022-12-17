@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    @EnvironmentObject var locationSearchViewModel: LocationSearchViewModel
     @EnvironmentObject var mapViewModel: MapViewModel
 
     var body: some View {
@@ -38,6 +39,12 @@ struct HomeView: View {
             }
         }
         .edgesIgnoringSafeArea(.bottom)
+        .onReceive(LocationManager.shared.$userLocation) { location in
+            if let location = location {
+                print("DEBUG: User location in Home View is location \(location.coordinate)")
+                self.locationSearchViewModel.userLocation = location
+            }
+        }
     }
 }
 

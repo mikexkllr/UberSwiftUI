@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct RideRequestView: View {
+    @State private var selectedRideType: RideType = RideType.uberX
+    @EnvironmentObject private var locationSearchViewModel: LocationSearchViewModel
     var body: some View {
         VStack {
             Capsule()
@@ -73,24 +75,32 @@ struct RideRequestView: View {
             // ride type selection view
             ScrollView(.horizontal) {
                 HStack(spacing: 12) {
-                    ForEach(0..<3, id: \.self) { index in
+                    ForEach(RideType.allCases, id: \.self) { rideType in
                         // card element which is used to display the selection
                         VStack(alignment: .leading) {
-                            Image("uber-x")
+                            Image(rideType.imageName)
                                 .resizable()
                                 .scaledToFit()
                             
-                            VStack(spacing: 4) {
-                                Text("Uber X")
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(rideType.description)
                                     .font(.system(size: 14, weight: .semibold))
                                 
-                                Text("22.40€")
+                                Text("\(self.locationSearchViewModel.computeRidePrice(for: rideType).toCurrency() ?? "Error")")
                                     .font(.system(size: 14, weight: .semibold))
                             }
+                            .padding()
                         }
                         .frame(width: 112, height: 140)
-                        .background(Color(.systemGroupedBackground))
+                        .foregroundColor(rideType == self.selectedRideType ? .white : .black)
+                        .background(Color(self.selectedRideType == rideType ? .systemBlue :  .systemGroupedBackground))
+                        .scaleEffect(rideType == selectedRideType ? 1.20 : 1.00)
                         .cornerRadius(15)
+                        .onTapGesture {
+                            withAnimation(.spring()) {
+                                self.selectedRideType = rideType
+                            }
+                        }
                     }
                 }
             }

@@ -12,6 +12,7 @@ class LocationSearchViewModel: NSObject, ObservableObject {
     // MARK: - Properties
     @Published var results = [MKLocalSearchCompletion]()
     @Published var selectedLocation: MKMapItem?
+    var userLocation: CLLocation?
     
     private let searchCompleter = MKLocalSearchCompleter()
     var queryFragment: String = "" {
@@ -47,6 +48,18 @@ class LocationSearchViewModel: NSObject, ObservableObject {
         searchRequest.naturalLanguageQuery = localSearch.title.appending(localSearch.subtitle)
         let search = MKLocalSearch(request: searchRequest)
         search.start(completionHandler: completion)
+    }
+    
+    func computeRidePrice(for type: RideType) -> Double {
+        guard let selectedDestination = selectedLocation?.placemark.location, let userLocation = self.userLocation else {
+            return 0.0
+        }
+        
+        let tripDistanceInMeter = userLocation.distance(from: selectedDestination)
+        let price = type.computePrice(for: tripDistanceInMeter)
+
+        
+        return price
     }
 }
 
