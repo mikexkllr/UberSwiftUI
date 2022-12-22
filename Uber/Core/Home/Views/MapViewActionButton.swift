@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MapViewActionButton: View {
-    @EnvironmentObject var mapViewModel: MapViewModel
+    @Binding var mapState: MapViewState
     @EnvironmentObject var locationViewModel: LocationSearchViewModel
     
     var body: some View {
@@ -31,30 +31,32 @@ struct MapViewActionButton: View {
     }
     
     func actionForState() {
-        switch self.mapViewModel.mapState {
+        switch self.mapState {
         case .noInput:
             print("DEBUG: NO INPUT")
         case .searchingForLocation:
-            self.mapViewModel.mapState = .noInput
-        case .locationSelected:
+            self.mapState = .noInput
+        case .locationSelected, .routeAdded:
             print("DEBUG: Clear the map view")
-            mapViewModel.mapState = .noInput
+            self.mapState = .noInput
             locationViewModel.selectedLocation = nil
         }
     }
     
     func imageNameForMapViewState() -> String {
-        switch self.mapViewModel.mapState {
+        switch self.mapState {
         case .noInput:
             return "line.3.horizontal"
-        default:
+        case .searchingForLocation, .locationSelected:
             return "arrow.left"
+        default:
+            return "line.3.horizontal"
         }
     }
 }
 
 struct MapViewActionButton_Previews: PreviewProvider {
     static var previews: some View {
-        MapViewActionButton()
+        MapViewActionButton(mapState: .constant(.noInput))
     }
 }

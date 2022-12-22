@@ -10,6 +10,7 @@ import SwiftUI
 struct RideRequestView: View {
     @State private var selectedRideType: RideType = RideType.uberX
     @EnvironmentObject private var locationSearchViewModel: LocationSearchViewModel
+    
     var body: some View {
         VStack {
             Capsule()
@@ -43,18 +44,19 @@ struct RideRequestView: View {
 
                         Spacer()
                         
-                        Text("1:30 PM")
+                        Text(self.locationSearchViewModel.pickupTime ?? "")
                             .font(.system(size: 14, weight: .semibold))
                             .foregroundColor(.gray)
                     }
                     
                     HStack {
-                        Text("Starbucks Coffee")
+                        let selectedLocation = self.locationSearchViewModel.selectedLocation
+                        Text(selectedLocation?.title ?? "Destination")
                             .font(.system(size: 14, weight: .semibold))
                         
                         Spacer()
                         
-                        Text("1:45 PM")
+                        Text(self.locationSearchViewModel.dropOffTime ?? "")
                             .font(.system(size: 14, weight: .semibold))
                             .foregroundColor(.gray)
                     }

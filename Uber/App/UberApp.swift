@@ -10,13 +10,11 @@ import SwiftUI
 @main
 struct UberApp: App {
     @StateObject var viewModel: LocationSearchViewModel = LocationSearchViewModel()
-    @StateObject var mapViewModel: MapViewModel = MapViewModel()
 
     var body: some Scene {
         WindowGroup {
             HomeView()
                 .environmentObject(self.viewModel)
-                .environmentObject(self.mapViewModel)
         }
     }
 }
