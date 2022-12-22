@@ -27,16 +27,15 @@ struct UberMapViewRepresentable: UIViewRepresentable {
     }
     
     // Updating and reloading our uikit view via SwiftUI state management
+
     func updateUIView(_ uiView: UIViewType, context: Context) {
         print("DEBUG: Map State is \(mapState)")
-        
         // is here to update/ rerender view -- using state management of course :)
-        if let selectedLocation = locationViewModel.selectedLocation {
-            print("DEBUG: Selected location in the map view \(selectedLocation.location.coordinate)")
-            context.coordinator.addAndSelectAnnotation(withCoordinate: selectedLocation.location.coordinate)
-            context.coordinator.configurePolyline(withDestinationCoordinate: selectedLocation.location.coordinate)
+        if let coordinate = self.locationViewModel.selectedLocation?.location.coordinate {
+            print("DEBUG: add polyline and annotations")
+            context.coordinator.addAndSelectAnnotation(withCoordinate: coordinate)
+            context.coordinator.configurePolyline(withDestinationCoordinate: coordinate)
         }
-        
         context.coordinator.updateMapView()
     }
     
@@ -80,14 +79,18 @@ extension UberMapViewRepresentable {
         
         // MARK: Helpers
         
+        // is here to select the place with a pinmark
         func addAndSelectAnnotation(withCoordinate coordinate: CLLocationCoordinate2D) {
             parent.mapView.removeAnnotations(parent.mapView.annotations)
+            // a string-based piece of location-specific data that you apply to a specific point on a map.
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
             
             self.parent.mapView.addAnnotation(annotation)
             self.parent.mapView.selectAnnotation(annotation, animated: true)
             self.parent.mapView.showAnnotations(parent.mapView.annotations, animated: true)
+            
+            print("DEBUG: Add annotation to map (pinmark)")
         }
         
 
@@ -98,7 +101,7 @@ extension UberMapViewRepresentable {
             }
             
             self.calledTimes += 1
-            print("How many time called: \(calledTimes)")
+            print("How many times configure polyline is called: \(calledTimes)")
             
             self.parent.locationViewModel.getDestinationRoute(from: userLocationCoordinate, to: destinationCoordinate) {  route, expectedTravelTime in
                 self.parent.mapView.addOverlay(route.polyline)
@@ -112,10 +115,11 @@ extension UberMapViewRepresentable {
         }
         
         func updateMapView() {
-            print("DEBUG: Remove overlays and center the view")
+            print("DEBUG: update map view")
             
             switch self.parent.mapState {
             case .noInput:
+                print("DEBUG: Remove overlays and center the view")
                 self.parent.mapView.removeAnnotations(self.parent.mapView.annotations)
                 self.parent.mapView.removeOverlays(self.parent.mapView.overlays)
                 
@@ -126,10 +130,7 @@ extension UberMapViewRepresentable {
             case .searchingForLocation:
                 break
             case .locationSelected:
-                if let coordinate = parent.locationViewModel.selectedLocation?.location.coordinate {
-                    self.addAndSelectAnnotation(withCoordinate: coordinate)
-                    self.configurePolyline(withDestinationCoordinate: coordinate)
-                }
+                // i tried to update the map here but somehow it didn`t worked properly because of swiftui state management
                 break
             case .routeAdded:
                 break
